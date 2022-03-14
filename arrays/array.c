@@ -1,5 +1,6 @@
 #include<stdlib.h>
 #include<stdio.h>
+#include<string.h>
 
 SARR *SARR_new() {
 
@@ -58,11 +59,15 @@ void SARR_insert(SARR* arr, int index, char* item) {
 
     reSize(arr, arr->size + 1);
 
-    for (int i = arr->size; i > index; i--)
-    {
-        char* temp = *(arr->data + (i - 1));
-        *(arr->data + i) = temp;
-    }
+    // for (int i = arr->size; i > index; i--)
+    // {
+    //     char* temp = *(arr->data + (i - 1));
+    //     *(arr->data + i) = temp;
+    // }
+    memmove(arr->data + index + 1, arr->data + index, sizeof(char*) * (arr->size - index));
+
+    //string.lib
+
     *(arr->data + index) = item;  
     arr->size++;
 }
