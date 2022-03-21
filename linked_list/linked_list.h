@@ -46,6 +46,15 @@ extern void reverse(LinkedList *);
 // remove_value(value) —— 删除链表中指定值的第一个元素
 extern void remove_value(LinkedList *, int value);
 
+
+void print_debug(LinkedList *);
 void check_pointer_address(void *p);
+LinkedList *list_new();
+LinkedListItem *new_item(int value);
+void free_list(LinkedList *l);
+void free_item(LinkedListItem *item);
+void check_empty_del(LinkedList *l);
+void check_pointer_address(void *p);
+void check_index_range(LinkedList *l, int index);
 
 #endif
