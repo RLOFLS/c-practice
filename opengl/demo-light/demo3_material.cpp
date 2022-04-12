@@ -25,6 +25,8 @@ unsigned int lastY = SRC_HEIGHT / 2;
 bool firstMouse = true;
 bool mouseRightmove = false;
 
+float rgb(float val);
+
 int main()
 {
     //初始窗口
@@ -68,7 +70,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     //正方体着色器程序
-    Shader cubeShader("exercise_cube.vert", "exercise_cube.frag");
+    Shader cubeShader("demo3_material.vert", "demo3_material.frag");
     //光方块
     Shader lightCubeShader("exercise_cube_light.vert", "exercise_cube_light.frag");
 
@@ -148,15 +150,20 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::vec3 lightColor = glm::vec3(sin((float)glfwGetTime()), 1.0f, 1.0f);
+        glm::vec3 lightColor = glm::vec3(rgb(121.2), rgb(11.1), rgb(183.7));
+        
+        glm::vec3 diffuseColor = lightColor   * glm::vec3(0.9f); 
+        glm::vec3 ambientColor = diffuseColor * glm::vec3(0.9f);
+
         float angle = 20.0f;
-        glm::vec3 lightPos = glm::vec3(cos(angle) * 7.5f, 0.0f, sin(angle) * 7.5f);
+        glm::vec3 lightPos = glm::vec3(12.0f, 2.0f, 0.0f);
+
         glm::mat4 lightmodel(1.0f);
         lightmodel = glm::scale(lightmodel, glm::vec3(0.3f, 0.3f, 0.3f));
-        lightmodel = glm::rotate(lightmodel, (float)glfwGetTime() * 2.0f, glm::vec3(0.2f, 1.0f, 0.0f));
+        //lightmodel = glm::rotate(lightmodel, (float)glfwGetTime() * 2.0f, glm::vec3(0.2f, 1.0f, 0.0f));
         lightmodel = glm::translate(lightmodel, lightPos);
 
-        lightPos = glm::vec3(lightmodel[3][0], lightmodel[3][1] , lightmodel[3][2]);
+        //lightPos = glm::vec3(lightmodel[3][0], lightmodel[3][1] , lightmodel[3][2]);
 
         //world
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)SRC_WIDTH / (float)SRC_HEIGHT, 0.1f, 100.0f);
@@ -165,15 +172,23 @@ int main()
 
         cubeShader.use();
         cubeShader.setVec3("cubeColor", glm::vec3(0.7f, 0.2f, 0.0f));
-        cubeShader.setVec3("lightColor", lightColor);
         cubeShader.setVec3("lightPos", lightPos);
-        //cubeShader.setMat4("lightPos2", model);
+
+
+
+        cubeShader.setVec3("material.ambient", rgb(23.9f), rgb(131.4f), rgb(22.9f));
+        cubeShader.setVec3("material.diffuse", rgb(23.9f), rgb(131.4f), rgb(22.9f));
+        cubeShader.setVec3("material.specular", rgb(23.9f), rgb(131.4f), rgb(22.9f));
+        cubeShader.setFloat("material.shininess", 32.0f);
+
+        cubeShader.setVec3("light.ambient",  ambientColor);
+        cubeShader.setVec3("light.diffuse",  diffuseColor); // darken diffuse light a bit
+        cubeShader.setVec3("light.specular", rgb(121.2), rgb(11.1), rgb(183.7)); 
+
         cubeShader.setVec3("viewPos", camera.position);
-        //view
+        
         cubeShader.setMat4("view", camera.getViewMatrix());
-        //world
         cubeShader.setMat4("projection", projection);
-        //model
         model = glm::mat4(1.0f);
         cubeShader.setMat4("model", model);
 
@@ -198,10 +213,14 @@ int main()
     
     glfwTerminate();
     return 0;
+}
 
-
-
-
+float rgb(float val) 
+{
+    if(val <= 127)
+        return 0.5 * val/127.0;
+    else
+        return 0.5 + 0.5 * val/128.0;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

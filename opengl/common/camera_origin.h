@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
+#include <iostream>
 
 enum Camera_Movement {
     FORWARD,
@@ -15,13 +16,13 @@ enum Camera_Movement {
 
 // Default camera values
 //y轴偏航
-const float YAW         = -90.0f;
+const float YAW         = 90.0f;
 //x轴仰俯
 const float PITCH       =  0.0f;
 
 const float SPEED       =  2.5f;
 const float SENSITIVITY =  0.1f;
-const float ZOOM        =  45.0f;
+const float ZOOM        =  30.0f;
 const glm::vec3 TARGET_ORIGIN = glm::vec3(0.0f, 0.0f, 0.0f);
 
 namespace glcar {
@@ -84,7 +85,6 @@ namespace glcar {
             //     if (pitch < -89.0f)
             //         pitch = -89.0f;
             // }
-            std::cout << "yaw: " << yaw << "pitch: " <<pitch << std::endl;
 
             // update Front, Right and Up Vectors using the updated Euler angles
             updateCameraVectors();
@@ -111,13 +111,24 @@ namespace glcar {
 
         void updateCameraVectors()
         {
+            if (pitch > 360) {
+                pitch -= 360;
+            }
             glm::vec3 newDirection;
-            
-            float pSin = sin(glm::radians(pitch));
-            float pCos = cos(glm::radians(pitch));
 
-            newDirection.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-            newDirection.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+            float pCos = cos(glm::radians(pitch));
+            float ySin = sin(glm::radians(yaw));
+            float yCos = cos(glm::radians(yaw));
+            
+            // //相机方向
+            if ((pitch > 90  && pitch <  270)) {
+                up = glm::vec3(0.0f, -0.1f, 0.0f);
+            } else {
+                up = glm::vec3(0.0f, 0.1f, 0.0f);
+            }
+        
+            newDirection.x = yCos * pCos;
+            newDirection.z = sin(glm::radians(yaw)) * pCos;
             newDirection.y = sin(glm::radians(pitch)); 
 
             //newDirection = glm::normalize(newDirection);

@@ -68,7 +68,7 @@ int main()
     glEnable(GL_DEPTH_TEST);
 
     //正方体着色器程序
-    Shader cubeShader("exercise_cube.vert", "exercise_cube.frag");
+    Shader cubeShader("exercise_cube2.vert", "exercise_cube2.frag");
     //光方块
     Shader lightCubeShader("exercise_cube_light.vert", "exercise_cube_light.frag");
 
@@ -148,7 +148,7 @@ int main()
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glm::vec3 lightColor = glm::vec3(sin((float)glfwGetTime()), 1.0f, 1.0f);
+        glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
         float angle = 20.0f;
         glm::vec3 lightPos = glm::vec3(cos(angle) * 7.5f, 0.0f, sin(angle) * 7.5f);
         glm::mat4 lightmodel(1.0f);
